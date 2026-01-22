@@ -8,18 +8,40 @@ const servers = [
   { name: 'European', ip: 'eu.hytown.org', flag: '🇪🇺', ping: 'EU Optimized' },
 ];
 
-function FloatingParticle({ delay }: { delay: number }) {
-  const randomX = Math.random() * 100;
-  const randomSize = Math.random() * 3 + 2;
-  const duration = Math.random() * 15 + 20;
+// Pre-computed particle positions to avoid hydration mismatch
+const particleData = [
+  { x: 5, size: 3, duration: 22 },
+  { x: 15, size: 2.5, duration: 25 },
+  { x: 25, size: 4, duration: 20 },
+  { x: 35, size: 3.5, duration: 28 },
+  { x: 45, size: 2, duration: 23 },
+  { x: 55, size: 4.5, duration: 26 },
+  { x: 65, size: 3, duration: 21 },
+  { x: 75, size: 2.8, duration: 24 },
+  { x: 85, size: 3.2, duration: 27 },
+  { x: 95, size: 4, duration: 22 },
+  { x: 10, size: 2.2, duration: 25 },
+  { x: 20, size: 3.8, duration: 23 },
+  { x: 30, size: 2.6, duration: 26 },
+  { x: 40, size: 3.4, duration: 21 },
+  { x: 50, size: 4.2, duration: 24 },
+  { x: 60, size: 2.9, duration: 27 },
+  { x: 70, size: 3.1, duration: 20 },
+  { x: 80, size: 4.8, duration: 28 },
+  { x: 90, size: 2.4, duration: 22 },
+  { x: 100, size: 3.6, duration: 25 },
+];
+
+function FloatingParticle({ delay, index }: { delay: number; index: number }) {
+  const data = particleData[index % particleData.length];
 
   return (
     <motion.div
       className="absolute rounded-full"
       style={{
-        left: `${randomX}%`,
-        width: randomSize,
-        height: randomSize,
+        left: `${data.x}%`,
+        width: data.size,
+        height: data.size,
         background: `radial-gradient(circle, rgba(201, 170, 113, 0.8) 0%, rgba(201, 170, 113, 0) 70%)`,
       }}
       initial={{ y: '100vh', opacity: 0 }}
@@ -28,7 +50,7 @@ function FloatingParticle({ delay }: { delay: number }) {
         opacity: [0, 1, 1, 0],
       }}
       transition={{
-        duration,
+        duration: data.duration,
         delay,
         repeat: Infinity,
         ease: 'linear',
@@ -183,7 +205,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 pointer-events-none">
         {/* Floating Particles */}
         {[...Array(20)].map((_, i) => (
-          <FloatingParticle key={i} delay={i * 0.5} />
+          <FloatingParticle key={i} delay={i * 0.5} index={i} />
         ))}
 
         {/* Radial glow behind content */}
